@@ -1,0 +1,146 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <SurfaceView
+        android:id="@+id/surfaceview_show_picture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
+    <ProgressBar
+        android:layout_gravity="center"
+        android:id="@+id/loading_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateDrawable="@drawable/rotate_loading_360"
+        android:indeterminateDuration="1800" />
+
+    <RelativeLayout
+        android:id="@+id/menu_layout"
+        android:background="@drawable/box_bk"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:gravity="left"
+        android:paddingLeft="60dp" >
+
+        <Button
+            android:id="@+id/menu_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="100dp"
+            android:focusable="false"
+            android:background="@drawable/navigation_bk"
+            android:text="@string/menu_title"
+            android:textColor="#FFFFFFFF" />
+
+        <LinearLayout
+            android:id="@+id/lay_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/line1"
+            android:focusableInTouchMode="true"
+            android:background="@drawable/menu_nofocus"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/menu_picplay"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/picplay" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/slide_show"
+                android:focusable="false"
+                android:textColor="#FFFFFFFF" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/line1"
+            android:layout_width="130dp"
+            android:layout_height="1dp"
+            android:focusable="false"
+            android:layout_above="@+id/lay_2"
+            android:layout_marginBottom="20dp"
+            android:background="#9fffffff" />
+
+        <LinearLayout
+            android:id="@+id/lay_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:background="@drawable/menu_heighlight"
+            android:layout_above="@+id/line2" >
+
+            <ImageButton
+                android:id="@+id/menu_right_rotate"
+                android:layout_width="wrap_content"
+                android:focusable="false"
+                android:layout_height="wrap_content"
+                android:background="@drawable/right_rotation_focus"
+                android:src="@drawable/rotation_r" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:text="@string/right_rotation"
+                android:textColor="#ffffffff" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/line2"
+            android:layout_width="130dp"
+            android:layout_height="1dp"
+            android:layout_above="@+id/lay_3"
+            android:layout_marginBottom="20dp"
+            android:background="#90ffffff" />
+
+        <LinearLayout
+            android:id="@+id/lay_3"
+            android:layout_width="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:background="@drawable/menu_heighlight"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/line3" >
+
+            <ImageButton
+                android:id="@+id/menu_left_rotate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:background="@drawable/left_rotation" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:text="@string/left_rotation"
+                android:textColor="#FFFFFFFF" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/line3"
+            android:layout_width="130dp"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="80dp"
+            android:background="#90DADADA" />
+    </RelativeLayout>
+
+</FrameLayout>
