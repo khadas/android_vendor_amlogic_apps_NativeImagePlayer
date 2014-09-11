@@ -200,11 +200,11 @@ public class FullImageActivity  extends Activity implements ImagePlayer.ImagePla
         public void run(){
             
             if(mCurPicPath!=null){
-                    mImageplayer.setDataSource(mCurPicPath);
+                    //mImageplayer.setDataSource(mCurPicPath);
                     //mImageplayer.setSampleSurfaceSize(1, 1280, 720);
                     //mImageplayer.start();
-                    mImageplayer.prepare();
-                    mImageplayer.show();
+                    mImageplayer.prepareBuf(mCurPicPath);
+                    mImageplayer.showBuf();
             }
         }
     };
@@ -308,7 +308,14 @@ public class FullImageActivity  extends Activity implements ImagePlayer.ImagePla
         mImageplayer = new ImagePlayer(this.getApplicationContext(),this);
         if(DEBUG) Log.d(TAG,"mShowHandler==null?"+(mShowHandler==null)
                 +" startPlayerRunnable==null?"+(startPlayerRunnable==null));
-        mShowHandler.post(startPlayerRunnable);
+		if(mCurPicPath != null){
+			mImageplayer.setDataSource(mCurPicPath);
+			mImageplayer.prepare();
+			mImageplayer.show();
+
+		}
+
+        //mShowHandler.post(startPlayerRunnable);
         mPlayLay = (LinearLayout)findViewById(R.id.lay_1);
         mRotateLLay = (LinearLayout)findViewById(R.id.lay_3);
         mRotateRlay= (LinearLayout)findViewById(R.id.lay_2);
@@ -325,6 +332,7 @@ public class FullImageActivity  extends Activity implements ImagePlayer.ImagePla
         mRotateLLay.setOnFocusChangeListener(this);
         mPlayLay.setOnFocusChangeListener(this);
         mUIHandler.sendEmptyMessageDelayed(DISMISS_MENU, DISPLAY_MENU_TIME);
+		mUIHandler.sendEmptyMessageDelayed(DISMISS_PROGRESSBAR,1000);
     }
 
     @Override
@@ -388,6 +396,7 @@ public class FullImageActivity  extends Activity implements ImagePlayer.ImagePla
                 }else{
                     mPlayLay.setBackgroundResource(R.drawable.menu_nofocus);
                     mPlayPicture = false;
+					mUIHandler.removeMessages(DISPLAY_SHOW);
                 }
                 break;
             case R.id.lay_3:
