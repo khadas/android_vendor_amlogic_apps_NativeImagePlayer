@@ -26,7 +26,7 @@ LOCAL_CERTIFICATE := platform
 LOCAL_PROGUARD_ENABLED := full
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
-WITH_DEXPREOPT = false
+#WITH_DEXPREOPT = false
 include $(BUILD_PACKAGE)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
