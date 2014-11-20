@@ -1,5 +1,5 @@
 /**
- * @Package com.meson.imageplayer
+ * @Package com.droidlogic.imageplayer
  * @Description
  *
  * Copyright (c) Inspur Group Co., Ltd. Unpublished
@@ -13,7 +13,7 @@
  * conditions of the Non-Disclosure Agreement pursuant to which this
  * source code was originally received.
  */
-package com.meson.imageplayer;
+package com.droidlogic.imageplayer;
 
 import android.content.Context;
 import android.content.Intent;

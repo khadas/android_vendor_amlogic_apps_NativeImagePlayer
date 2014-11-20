@@ -1,5 +1,5 @@
 /**
- * @Package com.meson.imageplayer
+ * @Package com.droidlogic.imageplayer
  * @Description
  *
  * Copyright (c) Inspur Group Co., Ltd. Unpublished
@@ -13,7 +13,7 @@
  * conditions of the Non-Disclosure Agreement pursuant to which this
  * source code was originally received.
  */
-package com.meson.imageplayer;
+package com.droidlogic.imageplayer;
 
 import android.app.Activity;
 
@@ -417,28 +417,28 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
     }
 
     /* (non-Javadoc)
-     * @see com.meson.imageplayer.ImagePlayer.ImagePlayerListener#onPrepared()
+     * @see com.droidlogic.imageplayer.ImagePlayer.ImagePlayerListener#onPrepared()
      */
     @Override
     public void onPrepared() {
     }
 
     /* (non-Javadoc)
-     * @see com.meson.imageplayer.ImagePlayer.ImagePlayerListener#onPlaying()
+     * @see com.droidlogic.imageplayer.ImagePlayer.ImagePlayerListener#onPlaying()
      */
     @Override
     public void onPlaying() {
     }
 
     /* (non-Javadoc)
-     * @see com.meson.imageplayer.ImagePlayer.ImagePlayerListener#onStoped()
+     * @see com.droidlogic.imageplayer.ImagePlayer.ImagePlayerListener#onStoped()
      */
     @Override
     public void onStoped() {
     }
 
     /* (non-Javadoc)
-     * @see com.meson.imageplayer.ImagePlayer.ImagePlayerListener#onShow()
+     * @see com.droidlogic.imageplayer.ImagePlayer.ImagePlayerListener#onShow()
      */
     @Override
     public void onShow() {
@@ -469,7 +469,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
     }
 
     /* (non-Javadoc)
-     * @see com.meson.imageplayer.ImagePlayer.ImagePlayerListener#relseased()
+     * @see com.droidlogic.imageplayer.ImagePlayer.ImagePlayerListener#relseased()
      */
     @Override
     public void relseased() {

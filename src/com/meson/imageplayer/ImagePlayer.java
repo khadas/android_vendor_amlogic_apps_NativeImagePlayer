@@ -1,4 +1,4 @@
-package com.meson.imageplayer;
+package com.droidlogic.imageplayer;
 
 import android.content.Context;
 
