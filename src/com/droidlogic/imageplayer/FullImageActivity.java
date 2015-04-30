@@ -19,14 +19,14 @@ import android.app.Activity;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-
+import android.content.Context;
 import android.database.Cursor;
 
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 
 import android.net.Uri;
-
+import android.os.PowerManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -106,6 +106,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
     private LinearLayout mPlayLay;
     private LinearLayout mRotateLLay;
     private LinearLayout mRotateRlay;
+    private PowerManager.WakeLock    mWakeLock;
     private Handler mUIHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -147,7 +148,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
 
     private Runnable startPlayerRunnable = new Runnable() {
             public void run() {
-                if (mCurPicPath != null) {
+                if ((mCurPicPath != null) && (mImageplayer != null)) {
                     //mImageplayer.setDataSource(mCurPicPath);
                     //mImageplayer.setSampleSurfaceSize(1, 1280, 720);
                     //mImageplayer.start();
@@ -198,6 +199,31 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
                 Log.d(TAG, "contentType:" + contentType);
             }
         }
+        setContentView(R.layout.activity_main);
+        mShowHandlerThread = new HandlerThread("AmlogicPlayer");
+        mShowHandlerThread.start();
+
+        menu = (RelativeLayout) findViewById(R.id.menu_layout);
+        menu.setVisibility(View.GONE);
+        mLoadingProgress = (ProgressBar) findViewById(R.id.loading_image);
+        outAnimation = AnimationUtils.loadAnimation(this,
+                R.anim.menu_and_left_out);
+        leftInAnimation = AnimationUtils.loadAnimation(this, R.anim.left_in);
+        menuInAnimation = AnimationUtils.loadAnimation(this, R.anim.menu_in);
+        mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview_show_picture);
+
+        mSurfaceView.getHolder().addCallback(new SurfaceCallback());
+        mSurfaceView.getHolder().setKeepScreenOn(true);
+        mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        mSurfaceView.getHolder().setFormat(257);
+        mSurfaceView.getHolder().setFormat(258);
+        mSurfaceView.setFocusable(true);
+        mSurfaceView.setFocusableInTouchMode (true);
+        mSurfaceView.requestFocus();
+        mShowHandler = new Handler(mShowHandlerThread.getLooper()) {
+        };
+        mImageplayer = new ImagePlayer(this.getApplicationContext(), this);
+
     }
 
     public String getPathByUri(Uri uri) {
@@ -303,7 +329,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
             Log.d(TAG, "onKeyDown:" + keyCode);
         }
 
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
+        if (keyCode == KeyEvent.KEYCODE_MENU || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             if (menu.getVisibility() == View.VISIBLE) {
                 mUIHandler.removeMessages(DISMISS_MENU);
                 mUIHandler.sendEmptyMessage(DISMISS_MENU);
@@ -345,26 +371,10 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
     @Override
     protected void onResume() {
         super.onResume();
-
-        setContentView(R.layout.activity_main);
-        menu = (RelativeLayout) findViewById(R.id.menu_layout);
-        mLoadingProgress = (ProgressBar) findViewById(R.id.loading_image);
-        outAnimation = AnimationUtils.loadAnimation(this,
-                R.anim.menu_and_left_out);
-        leftInAnimation = AnimationUtils.loadAnimation(this, R.anim.left_in);
-        menuInAnimation = AnimationUtils.loadAnimation(this, R.anim.menu_in);
-        mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview_show_picture);
-        mSurfaceView.getHolder().addCallback(new SurfaceCallback());
-        mSurfaceView.getHolder().setKeepScreenOn(true);
-        mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        mSurfaceView.getHolder().setFormat(257);
-        mSurfaceView.getHolder().setFormat(258);
-        mShowHandlerThread = new HandlerThread("AmlogicPlayer");
-        mShowHandlerThread.start();
-
-        mShowHandler = new Handler(mShowHandlerThread.getLooper()) {
-                };
-        mImageplayer = new ImagePlayer(this.getApplicationContext(), this);
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
+                | PowerManager.ON_AFTER_RELEASE, TAG);
+        mWakeLock.acquire();
 
         if (DEBUG) {
             Log.d(TAG,
@@ -414,6 +424,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
             mImageplayer.release();
             mImageplayer = null;
         }
+        mWakeLock.release();
     }
 
     /* (non-Javadoc)
@@ -499,8 +510,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
         case R.id.lay_3:
         case R.id.menu_left_rotate:
 
-            if ((mImageplayer != null) &&
-                    (mImageplayer.getRunningStatus() == ImagePlayer.STATUS_PLAYING)) {
+            if ((mImageplayer != null)) {
                 mDegress -= 90;
                 mImageplayer.setRotate(mDegress % 360, 1);
             }
@@ -549,6 +559,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
             if (DEBUG) {
                 Log.v(TAG, "surfaceCreated");
             }
+            mImageplayer.setDisplay(holder);
         }
 
         @Override
