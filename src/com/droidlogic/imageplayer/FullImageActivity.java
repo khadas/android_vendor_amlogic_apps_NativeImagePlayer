@@ -66,8 +66,7 @@ import java.util.ArrayList;
 /**
  * @ClassName FullImageActivity
  * @Description TODO
- * @Date 2014年5月19日
- * @Email
+ * @Date
  * @Author
  * @Version V1.0
  */
@@ -152,9 +151,14 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
                     //mImageplayer.setDataSource(mCurPicPath);
                     //mImageplayer.setSampleSurfaceSize(1, 1280, 720);
                     //mImageplayer.start();
-                    mImageplayer.prepareBuf(mCurPicPath);
+                    if (mImageplayer.prepareBuf(mCurPicPath) < 0) {
+                        Toast.makeText(FullImageActivity.this, R.string.not_display, Toast.LENGTH_LONG).show();
+                        FullImageActivity.this.onShow();
+                    }
+                    else {
                     mImageplayer.showBuf();
                 }
+            }
             }
         };
 
@@ -383,9 +387,21 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
         }
 
         if (mCurPicPath != null) {
-            mImageplayer.setDataSource(mCurPicPath);
-            mImageplayer.prepare();
-            mImageplayer.show();
+            int ret = mImageplayer.setDataSource(mCurPicPath);
+            if (ret < 0) {
+                Toast.makeText(this, R.string.not_display, Toast.LENGTH_LONG).show();
+                onShow();
+            }
+            else {
+                if (mImageplayer.prepare() < 0) {
+                    Toast.makeText(this, R.string.not_display, Toast.LENGTH_LONG).show();
+                    onShow();
+                }
+                else {
+                    mImageplayer.show();
+                }
+            }
+
         }
 
         //mShowHandler.post(startPlayerRunnable);
