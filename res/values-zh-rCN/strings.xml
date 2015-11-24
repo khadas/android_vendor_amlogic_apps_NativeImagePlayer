@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="app_name">NativeImagePlayer</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="no_such_item">No such Item</string>
+    <string name="action_settings">"设置"</string>
+    <string name="no_such_item">"此类型不支持"</string>
     <string name="menu_title">"菜单"</string>
     <string name="slide_show">"幻灯片"</string>
     <string name="left_rotation">"左旋转"</string>
