@@ -62,7 +62,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 
-
+import com.droidlogic.app.SystemControlManager;
 /**
  * @ClassName FullImageActivity
  * @Description TODO
@@ -82,6 +82,9 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
     public static final String KEY_MEDIA_TYPES = "mediaTypes";
     public static final String KEY_DISMISS_KEYGUARD = "dismiss-keyguard";
     private static final String TAG = "FullImageActivity";
+    public static final String VIDE_AXIS_NODE = "/sys/class/video/axis";
+    public static final String WINDOW_AXIS_NODE = "/sys/class/graphics/fb0/window_axis";
+
     private static final int DISMISS_PROGRESSBAR = 0;
     private static final int DISPLAY_SHOW = 1;
     private static final int DISMISS_MENU = 2;
@@ -105,7 +108,9 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
     private LinearLayout mPlayLay;
     private LinearLayout mRotateLLay;
     private LinearLayout mRotateRlay;
+    private SystemControlManager mSystemControl;
     private PowerManager.WakeLock    mWakeLock;
+    private String mCurrenAXIS;
     private Handler mUIHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -166,7 +171,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPlayPicture = false;
-
+        mSystemControl = new SystemControlManager(this);
         if (getIntent().getBooleanExtra(KEY_DISMISS_KEYGUARD, false)) {
             getWindow()
                 .addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
@@ -379,7 +384,20 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
         mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
                 | PowerManager.ON_AFTER_RELEASE, TAG);
         mWakeLock.acquire();
-
+        if (mSystemControl != null) {
+            mCurrenAXIS = mSystemControl.readSysFs(VIDE_AXIS_NODE);
+            String targetAXIS = mSystemControl.readSysFs(WINDOW_AXIS_NODE);
+            Log.d(TAG,"targetAXIS:"+targetAXIS);
+            int startIndex = targetAXIS.indexOf("[");
+            int endIndex = targetAXIS.indexOf("]");
+            String newAxis;
+            if ( startIndex < endIndex ) {
+                newAxis = targetAXIS.substring(startIndex+1,endIndex);
+            }else {
+                newAxis = targetAXIS;
+            }
+            mSystemControl.writeSysFs(VIDE_AXIS_NODE,newAxis);
+        }
         if (DEBUG) {
             Log.d(TAG,
                 "mShowHandler==null?" + (mShowHandler == null) +
@@ -431,7 +449,9 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
         if (DEBUG) {
             Log.d(TAG, "onPause");
         }
-
+        if (mSystemControl != null) {
+            mSystemControl.writeSysFs(VIDE_AXIS_NODE,mCurrenAXIS);
+        }
         if (null != mImageplayer) {
             if (DEBUG) {
                 Log.d(TAG, "onPause release");
@@ -575,7 +595,9 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
             if (DEBUG) {
                 Log.v(TAG, "surfaceCreated");
             }
-            mImageplayer.setDisplay(holder);
+            if (android.os.Build.VERSION.SDK_INT < 23 ) {
+                mImageplayer.setDisplay(holder);
+            }
         }
 
         @Override
