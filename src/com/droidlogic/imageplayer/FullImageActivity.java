@@ -59,7 +59,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import com.droidlogic.app.SystemControlManager;
@@ -253,15 +253,20 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
     }
 
     private String filterPath(String filePath) {
-        if (filePath.startsWith("/storage/emulated/0")) {
-            return Environment.getLegacyExternalStorageDirectory()
-                              .getAbsolutePath() +
-            filePath.substring(filePath.lastIndexOf('/'), filePath.length());
+        if ( filePath.startsWith("/storage/emulated/0") ) {
+            try {
+                Method method = Environment.class.getMethod("getLegacyExternalStorageDirectory");
+                File file = (File)method.invoke(null);
+                filePath = file.getAbsolutePath() + filePath.substring(filePath.lastIndexOf('/'), filePath.length());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return filePath;
+            }
         }
 
+        if ( DEBUG ) Log.d(TAG,"path:"+filePath);
         return filePath;
     }
-
     private void findPathByUri(Uri uri, String[] type) {
         if (DEBUG) {
             Log.d(TAG, "findPathByUri uri is " + uri + " type is " + type);
