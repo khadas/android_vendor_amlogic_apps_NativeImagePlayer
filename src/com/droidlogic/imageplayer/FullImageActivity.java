@@ -253,11 +253,12 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
     }
 
     private String filterPath(String filePath) {
-        if ( filePath.startsWith("/storage/emulated/0") ) {
+        if ( filePath.startsWith("/storage/emulated/") ) {
             try {
                 Method method = Environment.class.getMethod("getLegacyExternalStorageDirectory");
                 File file = (File)method.invoke(null);
-                filePath = file.getAbsolutePath() + filePath.substring(filePath.lastIndexOf('/'), filePath.length());
+                String filePathSubString = filePath.substring("/storage/emulated/".length());
+                filePath = file.getAbsolutePath() + filePathSubString.substring(filePathSubString.indexOf('/'));
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return filePath;
