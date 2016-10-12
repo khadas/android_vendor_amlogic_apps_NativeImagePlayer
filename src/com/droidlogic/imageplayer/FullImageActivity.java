@@ -601,9 +601,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
             if (DEBUG) {
                 Log.v(TAG, "surfaceCreated");
             }
-            if (android.os.Build.VERSION.SDK_INT < 23 ) {
-                mImageplayer.setDisplay(holder);
-            }
+            mImageplayer.setDisplay(holder);
         }
 
         @Override
