@@ -61,7 +61,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-
+import java.text.DecimalFormat;
 import com.droidlogic.app.SystemControlManager;
 /**
  * @ClassName FullImageActivity
@@ -111,6 +111,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
     private SystemControlManager mSystemControl;
     private PowerManager.WakeLock    mWakeLock;
     private String mCurrenAXIS;
+    private long maxlenth  = 7340032;//gif max lenth 7MB
     private Handler mUIHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -208,6 +209,9 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
                 Log.d(TAG, "contentType:" + contentType);
             }
         }
+        if (!isSupportSuchSize(mCurPicPath)) {
+            finish();
+        }
         setContentView(R.layout.activity_main);
         mShowHandlerThread = new HandlerThread("AmlogicPlayer");
         mShowHandlerThread.start();
@@ -251,7 +255,22 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
             return filePath;
         }
     }
-
+    private boolean isSupportSuchSize(String path){
+        boolean ret =true;
+        String endstr1 = ".gif";
+        String endstr2 = ".gif?";
+        Log.d(TAG, "mCurPicPath:" + mCurPicPath);
+        if ((mCurPicPath !=null || mCurPicPath.length() >=0 ) && (mCurPicPath.endsWith(endstr1) ||mCurPicPath.endsWith(endstr2))) {
+            File f= new File(mCurPicPath);
+            long lenth = f.length();
+            Log.d(TAG, "this picture size is :" + lenth);
+            if (lenth >maxlenth) {
+               Toast.makeText(this, "This picture size "+((new DecimalFormat("#.00")).format((double) lenth / 1048576) + "MB")+" > 7.0MB not support!", Toast.LENGTH_LONG).show();
+               ret =false;
+            }
+        }
+        return ret;
+    }
     private String filterPath(String filePath) {
         if ( filePath.startsWith("/storage/emulated/") ) {
             try {
