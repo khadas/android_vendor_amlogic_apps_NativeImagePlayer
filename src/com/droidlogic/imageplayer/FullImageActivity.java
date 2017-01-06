@@ -428,8 +428,9 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
                 "mShowHandler==null?" + (mShowHandler == null) +
                 " startPlayerRunnable==null?" + (startPlayerRunnable == null));
         }
-
-        if (mCurPicPath != null) {
+        if (mImageplayer == null)
+            mImageplayer = new ImagePlayer(this.getApplicationContext(), this);
+        if ((mCurPicPath != null) && (mImageplayer!= null)) {
             int ret = mImageplayer.setDataSource(mCurPicPath);
             if (ret < 0) {
                 Toast.makeText(this, R.string.not_display, Toast.LENGTH_LONG).show();
@@ -620,7 +621,8 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
             if (DEBUG) {
                 Log.v(TAG, "surfaceCreated");
             }
-            mImageplayer.setDisplay(holder);
+            if (mImageplayer != null)
+                mImageplayer.setDisplay(holder);
         }
 
         @Override
