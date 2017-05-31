@@ -21,6 +21,10 @@ LOCAL_SDK_VERSION := current
 LOCAL_PACKAGE_NAME := NativeImagePlayer
 LOCAL_CERTIFICATE := platform
 
+ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
+LOCAL_PROPRIETARY_MODULE := true
+endif
+
 LOCAL_JAVA_LIBRARIES := droidlogic
 #LOCAL_PROGUARD_ENABLED := disabled
 LOCAL_PROGUARD_ENABLED := full
