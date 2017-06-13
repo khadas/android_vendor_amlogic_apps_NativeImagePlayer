@@ -489,6 +489,16 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
         mWakeLock.release();
     }
 
+     @Override
+     protected void onStop() {
+        super.onStop();
+
+        if (DEBUG) {
+            Log.d(TAG, "onStop");
+        }
+        finish();
+     }
+
     /* (non-Javadoc)
      * @see com.droidlogic.imageplayer.ImagePlayer.ImagePlayerListener#onPrepared()
      */
