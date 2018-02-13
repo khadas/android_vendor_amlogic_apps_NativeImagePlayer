@@ -25,7 +25,7 @@ import android.util.Log;
 /**
  * @ClassName MediaUtil
  * @Description TODO
- * @Date 2014年5月20日
+ * @Date 2014/05/20
  * @Email
  * @Author
  * @Version V1.0
