@@ -64,6 +64,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.text.DecimalFormat;
 import com.droidlogic.app.SystemControlManager;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
+import android.content.Context;
+import java.io.IOException;
+import android.content.IntentFilter;
 /**
  * @ClassName FullImageActivity
  * @Description TODO
@@ -169,9 +177,39 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
             }
         };
 
+    public final  BroadcastReceiver mUsbScanner = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            final Uri uri = intent.getData();
+            if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
+                if (uri.getScheme().equals("file")) {
+                    String path = uri.getPath();
+                    try {
+                        path = new File(path).getCanonicalPath();
+                    } catch (IOException e) {
+                        Log.e(TAG, "couldn't canonicalize " + path);
+                        return;
+                    }
+                    Log.d(TAG, "action: " + action + " path: " + path);
+                    if (mCurPicPath == null)
+                        return;
+                    if (mCurPicPath.startsWith(path)) {
+                        finish();
+                    }
+                }
+            }
+
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_MEDIA_EJECT);
+        intentFilter.addDataScheme("file");
+        registerReceiver(mUsbScanner,intentFilter);
         mPlayPicture = false;
         mSystemControl = new SystemControlManager(this);
         if (getIntent().getBooleanExtra(KEY_DISMISS_KEYGUARD, false)) {
@@ -498,6 +536,13 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
             Log.d(TAG, "onStop");
         }
         finish();
+     }
+
+     @Override
+     public void onDestroy() {
+         super.onDestroy();
+         Log.d(TAG,"onDestroy()");
+         unregisterReceiver(mUsbScanner);
      }
 
     /* (non-Javadoc)
