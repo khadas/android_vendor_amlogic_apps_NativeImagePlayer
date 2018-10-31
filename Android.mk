@@ -17,14 +17,21 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
-LOCAL_SDK_VERSION := current
+#LOCAL_SDK_VERSION := current
 LOCAL_PACKAGE_NAME := NativeImagePlayer
 LOCAL_CERTIFICATE := platform
+LOCAL_REQUIRED_MODULES := libsurfaceoverlay_jni
+#LOCAL_JNI_SHARED_LIBRARIES := libsurfaceoverlay_jni
+LOCAL_PRODUCT_MODULE := true
+LOCAL_PRIVATE_PLATFORM_APIS := true
 
-ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
-LOCAL_PROPRIETARY_MODULE := true
-endif
+LOCAL_JAVA_LIBRARIES := \
+        android.hidl.base-V1.0-java \
+        android.hidl.manager-V1.0-java
 
+LOCAL_STATIC_JAVA_LIBRARIES := \
+        vendor.amlogic.hardware.imageserver-V1.0-java \
+        android-support-v4
 LOCAL_JAVA_LIBRARIES := droidlogic
 #LOCAL_PROGUARD_ENABLED := disabled
 LOCAL_PROGUARD_ENABLED := full

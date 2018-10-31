@@ -37,7 +37,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 
 import android.util.Log;
-
+import android.view.Surface;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.SurfaceHolder;
@@ -217,7 +217,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
                 .addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         }
 
-        Intent intent = getIntent();
+        /*Intent intent = getIntent();
         String action = intent.getAction();
 
         if (!Intent.ACTION_VIEW.equalsIgnoreCase(action)) {
@@ -233,20 +233,13 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
             Toast.makeText(this, R.string.no_such_item, Toast.LENGTH_LONG).show();
 
             return;
-        }
-
-        if (DEBUG) {
-            Log.d(TAG, "uri:" + uri + " contentType:" + contentType);
-        }
+        }*/
+        Uri uri = getIntent().getData();
 
         if (uri == null) {
             findPicList();
         } else {
             mCurPicPath = getPathByUri(uri);
-
-            if (DEBUG) {
-                Log.d(TAG, "contentType:" + contentType);
-            }
         }
         if (!isSupportSuchSize(mCurPicPath)) {
             finish();
@@ -370,7 +363,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
         //}
         mUIHandler.sendEmptyMessage(DISPLAY_SHOW);
     }
-
+/*
     private String getContentType(Intent intent) throws RuntimeException {
         String type = intent.getType();
 
@@ -395,7 +388,7 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
             return null;
         }
     }
-
+*/
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (DEBUG) {
@@ -467,8 +460,9 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
                 "mShowHandler==null?" + (mShowHandler == null) +
                 " startPlayerRunnable==null?" + (startPlayerRunnable == null));
         }
-        if (mImageplayer == null)
+        if (mImageplayer == null) {
             mImageplayer = new ImagePlayer(this.getApplicationContext(), this);
+        }
         if ((mCurPicPath != null) && (mImageplayer!= null)) {
             int ret = mImageplayer.setDataSource(mCurPicPath);
             if (ret < 0) {
@@ -476,12 +470,12 @@ public class FullImageActivity extends Activity implements ImagePlayer.ImagePlay
                 onShow();
             }
             else {
-                if (mImageplayer.prepare() < 0) {
+                if (mImageplayer.prepareBuf(mCurPicPath) < 0) {
                     Toast.makeText(this, R.string.not_display, Toast.LENGTH_LONG).show();
                     onShow();
                 }
                 else {
-                    mImageplayer.show();
+                    mImageplayer.showBuf();
                 }
             }
 
