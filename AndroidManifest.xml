@@ -23,7 +23,7 @@
     <uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="19" />
+        />
 
     <application
         android:allowBackup="true"
